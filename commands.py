@@ -48,14 +48,6 @@ def input_error(func):
 
     return inner
 
-def parse_input(user_input):
-    """
-    Розбиває введений користувачем рядок на команду та аргументи.
-    Повертає кортеж (command, args).
-    """
-    command, *args = user_input.split()
-    command = command.strip().lower()
-    return command, args
 
 
 @input_error
@@ -84,17 +76,21 @@ def change_contact(args, book):
     """
     name, old_phone, new_phone, *_ = args
     record = book.find(name)
+    print(record.phones)
+
+    if len(args) < 3:
+        return "Usage: change <name> <old_phone> <new_phone>"
+    
 
     if record is None:
         return f"Contact {name} not found"
-    
-    if old_phone not in [p.value for p in record.phones]:
-        return f"Phone '{old_phone}' not found for '{name}'"
-        
-    for p in record.phones:
-        if p.value == old_phone:
-            p.value = new_phone
-            break
+
+    # Викликаємо метод edit_phone для зміни номера
+    # edit_phone сам перевіряє, чи існує старий номер і чи новий номер валідний
+    try:
+        record.edit_phone(old_phone, new_phone)
+    except ValueError as e:
+        return str(e)
     
     return f"Phone for {name} changed from {old_phone} to {new_phone}."
 
@@ -108,7 +104,7 @@ def show_phone(args, book):
     phones = []
     name, = args
     record = book.find(name)
-
+    
     for p in record.phones:
         phones.append(p.value)
 

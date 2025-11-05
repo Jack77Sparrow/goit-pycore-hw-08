@@ -1,30 +1,8 @@
 
 from classes import AddressBook
 from commands import add_birthday, add_contact, birthdays, change_contact, show_all, show_birthday, show_phone 
-import pickle
 
 
-def save_data(data, filename='addressbook.pkl'):
-    """
-    Save the AddressBook into a file using pickle.
-
-    Args:
-        data (AddressBook): AddressBook instance to save.
-        filename (str, optional): Path to the file. Defaults to 'addressbook.pkl'.
-    """
-    with open(filename, 'wb') as file:
-        pickle.dump(data, file)
-
-def load_data(filename='addressbook.pkl'):
-    """Loading AddressBook from file
-    filename: path to file, where is saving AddressBook"""
-    try:
-        with open(filename, 'rb') as file:
-            data = pickle.load(file)
-            return data
-    except FileNotFoundError:
-        return AddressBook()
-    
 
 
 def parse_input(user_input):
@@ -38,6 +16,11 @@ def parse_input(user_input):
         tuple: (command, args), де command (str) — команда, 
             args (list[str]) — список аргументів.
     """
+
+    user_input = user_input.strip()
+
+    if not user_input:
+        return None, []
     # Розбиваємо введений рядок на частини
     command, *args = user_input.split()
     # Видаляємо зайві пробіли і приводимо команду до нижнього регістру
@@ -45,17 +28,17 @@ def parse_input(user_input):
     return command, args
 
 
+
+
 def main():
-    book = load_data()
+    book = AddressBook()
     print("Welcome to the assistant bot!")
     while True:
-        
         user_input = input("Enter a command: ")
         command, *args = parse_input(user_input)
         args = args[0]
         if command in ["close", "exit"]:
             print("Good bye!")
-            save_data(book)
             break
 
         elif command == "hello":
@@ -85,8 +68,6 @@ def main():
 
         else:
             print("Invalid command.")
-
-
 
 # Запуск програми
 if __name__ == "__main__":
