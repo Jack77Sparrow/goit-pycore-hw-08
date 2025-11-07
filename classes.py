@@ -1,7 +1,7 @@
 from collections import UserDict
 from typing import List, Optional, Union
 from datetime import datetime, timedelta, date
-import pickle
+
 
 class Field:
     """
